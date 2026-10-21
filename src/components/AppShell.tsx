@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import HomeView from "@/components/views/HomeView";
 import ExperiencesView from "@/components/views/ExperiencesView";
@@ -37,7 +38,11 @@ export default function AppShell() {
       view = <HomeView {...viewProps} />;
       break;
     case "/experiences":
-      view = <ExperiencesView {...viewProps} />;
+      view = (
+        <Suspense fallback={<p>Cargando experiencias...</p>}>
+          <ExperiencesView {...viewProps} />
+        </Suspense>
+      );
       break;
     case "/favorites":
       view = <FavoritesView {...viewProps} />;
