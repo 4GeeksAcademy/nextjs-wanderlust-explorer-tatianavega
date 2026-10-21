@@ -11,22 +11,35 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function normalizeDestination(value: string) {
+  const countryAliases: Record<string, string> = {
+    croatia: "croacia",
+    thailand: "tailandia",
+  };
+
+  return value
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/\b(croatia|thailand)\b/g, (country) => countryAliases[country]);
+}
+
 export default function useExperiences({
   search,
   category,
   destination,
 }: ExperienceFilters): Experience[] {
   const titlePattern = new RegExp(escapeRegExp(search.trim()), "i");
-  const normalizedDestination = destination.trim().toLocaleLowerCase();
+  const normalizedDestination = normalizeDestination(destination);
 
   return experiences.filter((experience) => {
     const matchesSearch = titlePattern.test(experience.title);
-    const matchesCategory = !category || experience.category === category;
+    const matchesCategory =
+      !category || experience.category.toLowerCase() === category.trim().toLowerCase();
     const matchesDestination =
       !normalizedDestination ||
       experience.destination
         .split(",")
-        .some((part) => part.trim().toLocaleLowerCase().includes(normalizedDestination));
+        .some((part) => normalizeDestination(part).includes(normalizedDestination));
 
     return matchesSearch && matchesCategory && matchesDestination;
   });

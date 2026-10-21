@@ -31,7 +31,9 @@ export default function FilterBar({
         </label>
         <select
           id="experience-category"
-          value={category}
+          value={
+            categories.find((option) => option.toLowerCase() === category.trim().toLowerCase()) ?? category
+          }
           onChange={(event) => onCategoryChange(event.target.value)}
           className="min-h-11 w-full rounded-md border border-foreground/25 bg-background px-3 py-2 text-sm outline-offset-2 focus-visible:outline-2"
         >
