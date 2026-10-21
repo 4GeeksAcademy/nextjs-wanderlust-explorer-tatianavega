@@ -35,7 +35,7 @@ export default function AppShell() {
 
   switch (pathname) {
     case "/":
-      view = <HomeView {...viewProps} />;
+      view = <HomeView />;
       break;
     case "/experiences":
       view = (
