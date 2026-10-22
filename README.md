@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wanderlust Explorer
 
-## Getting Started
+Explorador de experiencias de viaje construido con **Next.js (App Router)**, **React**, **TypeScript** y **Tailwind CSS**. Permite buscar, filtrar y marcar como favoritas 100 experiencias de todo el mundo, con búsqueda y filtros compartibles por URL.
 
-First, run the development server:
+## Tecnologías
+
+- Next.js 16 (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+
+## Cómo ejecutarlo
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre http://localhost:3000. Para generar la versión de producción:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Funcionalidades
 
-## Learn More
+- 5 rutas con navegación del lado del cliente: `/`, `/experiences`, `/experiences/[id]`, `/favorites` y `/profile`.
+- Búsqueda por título con regex case-insensitive (el término se escapa para evitar errores).
+- Filtros por categoría y destino, independientes y combinables con la búsqueda.
+- Búsqueda y filtros sincronizados con la URL. Ejemplo: `/experiences?search=vela&category=adventure&destination=Croatia`. Al cargar, los campos salen rellenos y la lista ya filtrada.
+- Favoritos con `useState` pasados por props.
+- Custom hooks `useFilters` y `useExperiences`.
+- Mensaje "No se encontraron resultados" cuando no hay coincidencias.
+- Diseño responsive.
+- Sin librerías de estado ni `localStorage`.
 
-To learn more about Next.js, take a look at the following resources:
+## Estructura de carpetas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/               # Rutas (App Router)
+├── components/        # Navbar, AppShell, ExperienceCard, SearchBar, FilterBar
+│   └── views/         # Vistas de cada página
+├── hooks/             # useFilters, useExperiences
+├── data/              # Dataset de 100 experiencias
+└── types/             # Interface Experience
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Decisiones de arquitectura
 
-## Deploy on Vercel
+`AppShell` guarda el `useState` de favoritos y renderiza la vista según `usePathname`. Esto se hace porque las páginas que llegan como `children` en el App Router no pueden recibir props. Así, los favoritos se pasan por props a cada vista sin usar Context ni librerías externas.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Design References
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Airbnb Experiences** (https://www.airbnb.com/s/experiences): tarjetas con foto grande, rating, precio y botón de favoritos. Aplicado en `ExperienceCard`.
+- **GetYourGuide** (https://www.getyourguide.com): filtros para elegir categoría y destino. Aplicado en `FilterBar`.
+- **Viator** (https://www.viator.com): listado de tours. Aplicado en la cuadrícula de `ExperiencesView`.
+
+Las imágenes del dataset son placeholders de picsum.photos.
+
+## Limitaciones
+
+Los favoritos se guardan solo en el estado de React, por lo que se pierden al recargar la página (el reto no pide persistencia).
