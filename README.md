@@ -61,3 +61,5 @@ Las imágenes del dataset son placeholders de picsum.photos.
 ## Limitaciones
 
 Los favoritos se guardan solo en el estado de React, por lo que se pierden al recargar la página (el reto no pide persistencia).
+
+**Demo:** https://tu-direccion.vercel.app
