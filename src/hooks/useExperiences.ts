@@ -20,6 +20,8 @@ function normalizeDestination(value: string) {
   return value
     .trim()
     .toLocaleLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/\b(croatia|thailand)\b/g, (country) => countryAliases[country]);
 }
 
@@ -33,13 +35,20 @@ export default function useExperiences({
 
   return experiences.filter((experience) => {
     const matchesSearch = titlePattern.test(experience.title);
+
     const matchesCategory =
-      !category || experience.category.toLowerCase() === category.trim().toLowerCase();
+      !category ||
+      experience.category.toLowerCase() === category.trim().toLowerCase();
+
+    const normalizedFull = normalizeDestination(experience.destination);
     const matchesDestination =
       !normalizedDestination ||
+      normalizedFull.includes(normalizedDestination) ||
       experience.destination
         .split(",")
-        .some((part) => normalizeDestination(part).includes(normalizedDestination));
+        .some((part) =>
+          normalizeDestination(part).includes(normalizedDestination),
+        );
 
     return matchesSearch && matchesCategory && matchesDestination;
   });
